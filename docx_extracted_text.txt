@@ -1,0 +1,767 @@
+A Secure and Compliant Cloud Architecture on AWS Using Defence-in-Depth: IAM, VPC, AWS KMS, CloudTrail and AWS Config
+MINI PROJECT REPORT
+Submitted by
+          ARJUN D    Register No.: 23UAI015
+ 
+Under the guidance of
+Mrs. M. SARANYA
+Assistant Professor
+in partial fulfillment of the requirements for the degree of
+BACHELOR OF TECHNOLOGY
+DEPARTMENT OF ARTIFICIAL INTELLIGENCE AND DATA SCIENCE
+SRI MANAKULA VINAYAGAR ENGINEERING COLLEGE
+(An Autonomous Institution) MADAGADIPET, PUDUCHERRY - 605107 
+OCTOBER 2026
+DEPARTMENT OF ARTIFICIAL INTELLIGENCE AND DATA SCIENCE
+BONAFIDE CERTIFICATE
+This is to certify that the project work entitled A Secure and Compliant Cloud Architecture on AWS Using Defence-in-Depth: IAM, VPC, AWS KMS, CloudTrail and AWS Config is a bonafide work done by ARJUN D [23UAI015] in partial fulfillment of the requirement, for the award of B.Tech Degree in Artificial Intelligence and Data Science by Pondicherry University during the academic year 2025 - 2026.
+PROJECT GUIDEPROJECT COORDINATORHEAD OF THE DEPARTMENT
+Mrs. M. SARANYAMrs. V. SELVIDr. J. MADHUSUDANAN
+Date of Submission: 
+TABLE OF CONTENTS
+S. NO                               PARTICULARSPAGE NO
+1CHAPTER 1 INTRODUCTION1
+2CHAPTER 2 PROBLEM STATEMENT2
+3CHAPTER 3 ARCHITECTURE DIAGRAM3
+4.1CHAPTER 4.1 MODULE – 1 SECURITY ARCHITECTURE AND IAM4
+4.1.1PROCEDURE FOR SECURITY ARCHITECTURE AND IAM4
+4.1.2SCREENSHOTS FOR SECURITY ARCHITECTURE AND IAM6
+4.1.3ACTIVITY DIAGRAM7
+4.1.4RESULT OF SECURITY ARCHITECTURE AND IAM8
+4.2CHAPTER 4.2 MODULE – 2 NETWORK SECURITY10
+4.2.1PROCEDURE FOR NETWORK SECURITY10
+4.2.2SCREENSHOTS FOR NETWORK SECURITY11
+4.2.3ACTIVITY DIAGRAM12
+4.2.4RESULT OF NETWORK SECURITY13
+4.3CHAPTER 4.3 MODULE – 3 DATA PROTECTION15
+4.3.1PROCEDURE FOR DATA PROTECTION15
+4.3.2SCREENSHOTS FOR DATA PROTECTION16
+4.3.3ACTIVITY DIAGRAM18
+4.3.4RESULT OF DATA PROTECTION18
+4.4CHAPTER 4.4 MODULE – 4 CLOUDTRAIL, AWS CONFIG AND RISK REMEDIATION20
+4.4.1PROCEDURE FOR CLOUDTRAIL, AWS CONFIG AND RISK REMEDIATION20
+4.4.2SCREENSHOTS FOR CLOUDTRAIL, AWS CONFIG AND RISK REMEDIATION23
+4.4.3ACTIVITY DIAGRAM25
+4.4.4RESULT OF CLOUDTRAIL, AWS CONFIG AND RISK REMEDIATION26
+5CONCLUSION28
+REFERENCES30
+INTRODUCTION
+Security in the cloud spans identity, network, data and governance at the same time, and a weakness in any one of these domains can negate strong controls in the others. This project applies the AWS Well-Architected Security Pillar to design and implement a secure and compliant AWS cloud architecture using defence-in-depth, covering IAM, Amazon VPC, AWS KMS, AWS CloudTrail and AWS Config. The security domains addressed by the project are introduced below.
+AWS Security Architecture and Identity
+Cloud workloads that process personal learner data are attractive targets, yet many security incidents originate from simple weaknesses: over-permissive identities, forgotten long-term access keys, publicly reachable storage and missing audit logs. Without a structured design approach, security controls are added piecemeal, overlap inconsistently and leave gaps between services. This project addresses the gap by applying the AWS Well-Architected Security Pillar to design a six-layer defence-in-depth architecture and by implementing AWS IAM roles, permission boundaries and multi-factor authentication so that every human and machine identity holds only the permissions it needs.
+AWS Network Security
+A flat network in which application servers and databases share the same exposure as the load balancer allows a single compromised host to reach every other resource. Traditional perimeter-only firewalls are not sufficient for cloud workloads that scale dynamically. This project solves the network challenge by building an Amazon VPC with public, private-application and isolated database subnets across two Availability Zones, chained security groups, network ACLs, VPC endpoints and VPC Flow Logs, so that only HTTPS traffic to the load balancer is reachable from the internet.
+AWS Data Protection
+Learner records, credentials and audit logs are sensitive, and unencrypted storage turns every backup, snapshot or misconfigured bucket into a potential data breach. Managing encryption keys manually is error-prone and difficult to audit. This project implements a customer managed AWS KMS key with automatic rotation and a key policy that separates key administrators from key users, and applies it to Amazon S3, Amazon RDS, Amazon EBS and CloudTrail logs, with TLS 1.2 or higher protecting data in transit.
+AWS Governance, Logging and Compliance
+Preventive controls cannot prove that they remain in place. Configuration drift, emergency changes and human error silently erode a secure baseline, and without audit logs an organisation cannot investigate or demonstrate compliance. This project activates a multi-Region AWS CloudTrail trail with log file validation, and uses AWS Config with CIS-aligned managed rules and automated remediation to continuously assess resources, identify non-compliant configurations, and document the risks found with their recommended remediation steps.
+PROBLEM STATEMENT
+Design a secure and compliant AWS cloud architecture using defence-in-depth principles. Implement IAM roles and least-privilege access policies, configure a VPC with public and private subnets, enable encryption using AWS KMS, activate CloudTrail for activity logging, and use AWS Config to assess resource configurations against security and compliance requirements. Identify security risks and document recommended remediation steps.
+Key AWS Services / Concepts: AWS Well-Architected Security Pillar, IAM (Identity and Access Management), VPC (Virtual Private Cloud), AWS KMS (Key Management Service), CloudTrail, AWS Config.
+Hands-on Activities: Defence-in-depth architecture design, least-privilege IAM roles and policies, VPC with public and private subnets, KMS encryption, CloudTrail activity logging, AWS Config compliance assessment, and a documented risk and remediation register.
+OBJECTIVES
+To design a six-layer defence-in-depth architecture for a three-tier web workload, based on the AWS Well-Architected Security Pillar.
+To implement least-privilege IAM roles, permission boundaries and multi-factor authentication so that every human and machine identity holds only the permissions it needs.
+To build an Amazon VPC with public, private-application and isolated database subnets, chained security groups, network ACLs, VPC endpoints and VPC Flow Logs.
+To protect data at rest and in transit using a customer managed AWS KMS key with automatic rotation and separation of duties between key administrators and key users.
+To activate a multi-Region AWS CloudTrail trail with log file validation, and to use AWS Config rules and automated remediation to assess compliance continuously.
+To identify security risks and document a risk register with severity and recommended remediation steps.
+ARCHITECTURE DIAGRAM
+Figure 3.1 shows the overall secure and compliant AWS cloud architecture, and Figure 3.2 shows the six defence-in-depth layers that protect the learner data.
+Figure 3.1: Overall secure and compliant AWS cloud architecture.
+Figure 3.2: Defence-in-depth layers protecting the learner data.
+MODULE 1
+SECURITY ARCHITECTURE AND IAM
+4.1.1 PROCEDURE FOR SECURITY ARCHITECTURE AND IAM
+The Security Architecture and Identity module forms the foundation of the entire secure cloud design. Before any network, encryption or monitoring control is configured, the security objectives, trust boundaries and identity model of the workload must be defined. This section documents how the AWS Well-Architected Security Pillar was used to design a defence-in-depth architecture, and how AWS Identity and Access Management (IAM) was configured to enforce least-privilege access for every human and machine identity.
+Overview
+The reference workload is a three-tier web application that processes personally identifiable learner data: an Application Load Balancer in public subnets, an application tier on Amazon EC2 in private subnets, and an encrypted Amazon RDS database in isolated subnets. Around this workload, six independent control layers were designed — governance, identity, network, compute, data and detection — so that the failure of any single control does not expose the data. All resources are deployed in the us-east-1 Region across two Availability Zones.
+Understanding the Security Pillar Design Principles
+The Well-Architected Security Pillar defines seven design principles. Each principle was mapped to a concrete AWS service and a measurable control in this project:
+Design Principle
+Meaning
+AWS Service Used
+Control Implemented
+Strong identity foundation
+Centralise identities and grant least privilege
+IAM, IAM Identity Center
+Roles only, MFA, no long-term keys
+Enable traceability
+Monitor, alert and audit all actions
+CloudTrail, Config, CloudWatch
+Multi-Region trail, config recorder
+Security at all layers
+Apply controls at every layer
+VPC, SG, NACL, WAF
+Public / private / isolated subnets
+Automate security best practice
+Use code and automated remediation
+AWS Config, SSM Automation
+Auto-remediation of drift
+Protect data in transit and at rest
+Classify and encrypt all data
+AWS KMS, ACM, TLS 1.2+
+CMK encryption, HTTPS only
+Keep people away from data
+Reduce direct access to data
+SSM Session Manager
+No SSH, no bastion host
+Prepare for security events
+Define incident response
+CloudWatch, SNS
+Alarms on critical API calls
+Step 1: Threat Modelling and Security Requirements
+A lightweight STRIDE-based threat model was prepared for the reference workload. The assets considered were learner PII, application credentials, encryption keys and audit logs. The principal threats identified were credential theft, privilege escalation, public exposure of storage, unencrypted data, undetected configuration drift and tampering with audit logs. Each threat was linked to one or more preventive and detective controls, which form the requirements for the remaining modules.
+Step 2: Defence-in-Depth Architecture Design
+The architecture was designed in six concentric layers. An attacker must defeat every layer in turn to reach the data, and each layer generates evidence that is collected by the detection layer:
+Governance: AWS Organizations service control policies (SCPs) prevent disabling CloudTrail, deleting Config recorders or leaving approved Regions.
+Identity: IAM roles with temporary credentials, mandatory MFA and permission boundaries.
+Network: VPC with public, private and isolated subnets, stateful security groups and stateless network ACLs.
+Compute: IMDSv2 enforced on all instances, patched AMIs and access through AWS Systems Manager only.
+Data: AWS KMS customer managed keys, S3 Block Public Access and encrypted RDS storage and backups.
+Detection: CloudTrail, AWS Config and CloudWatch alarms for continuous visibility.
+Step 3: AWS IAM – Least-Privilege Identity Control
+IAM was configured so that no human user holds long-term access keys. The following identities and policies were created:
+Root account: MFA enabled, no access keys, used only for account-recovery tasks.
+SecureArchAdmin role: assumed through IAM Identity Center with MFA; permission boundary prevents IAM privilege escalation and prevents stopping CloudTrail.
+SecureArchAppRole (instance profile): s3:GetObject and s3:PutObject only on the application data prefix, kms:Decrypt and kms:GenerateDataKey only on one CMK ARN, and logs:PutLogEvents for the application log group.
+SecureArchAuditor role: read-only access (SecurityAudit managed policy) for reviewing CloudTrail and Config findings.
+Account password policy: minimum 14 characters, complexity required, 90-day maximum age and reuse prevention of 24 passwords.
+A representative least-privilege policy attached to the application role is shown below. No wildcard action or wildcard resource is used.
+{ "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "AppDataAccess", "Effect": "Allow",
+    "Action": ["s3:GetObject","s3:PutObject"],
+    "Resource": "arn:aws:s3:::secure-arch-data/app/*" },
+  { "Sid": "UseDataKey", "Effect": "Allow",
+    "Action": ["kms:Decrypt","kms:GenerateDataKey"],
+    "Resource": "arn:aws:kms:us-east-1:<account-id>:key/<key-id>" },
+  { "Sid": "DenyUnencryptedUpload", "Effect": "Deny",
+    "Action": "s3:PutObject",
+    "Resource": "arn:aws:s3:::secure-arch-data/*",
+    "Condition": {"StringNotEquals":
+      {"s3:x-amz-server-side-encryption":"aws:kms"}} }]}
+Step 4: Validation with IAM Access Analyzer
+IAM Access Analyzer was enabled to detect resources shared outside the account, and the policy validation feature was used to check every custom policy for errors, security warnings and overly permissive statements. The IAM policy simulator was then used to confirm that the application role is allowed to perform only the intended actions and that all other actions are implicitly denied.
+Step 5: Identity Monitoring and Credential Hygiene
+To keep the identity layer trustworthy after deployment, CloudWatch metric filters and alarms were created on the CloudTrail log group for the events that signal identity abuse: use of the root account, console sign-in without MFA, changes to IAM policies, and creation of access keys. Each alarm publishes to an Amazon SNS topic so that the security owner is notified within minutes.
+The IAM credential report was generated and reviewed to confirm that no user holds an unused password, an unrotated access key or a disabled MFA device. Because all human access is federated through IAM Identity Center, the report is expected to remain empty of long-term user credentials, and any deviation is treated as a finding.
+4.1.2 SCREENSHOTS FOR SECURITY ARCHITECTURE AND IAM
+Figure 4.1.1: AWS IAM — Roles created for administrator, application and auditor
+Figure 4.1.2: AWS IAM — Least-privilege policy and permission boundary (JSON)
+Figure 4.1.3: Role-based least-privilege access control model.
+Figure 4.1.4: Authentication and authorisation flow using IAM Identity Center and STS.
+4.1.3 ACTIVITY DIAGRAM
+The table below represents the complete Security Architecture and IAM implementation workflow:
+Step
+Activity
+Technology
+Output
+1
+Define security objectives and perform threat modelling
+Security Pillar, STRIDE
+Threat list and control requirements
+2
+Design six-layer defence-in-depth architecture
+Architecture design
+Layered architecture diagram
+3
+Secure root account: enable MFA, delete access keys
+IAM
+Root account hardened
+4
+Configure IAM Identity Center with MFA
+IAM Identity Center
+Federated human access
+5
+Create SecureArchAdmin role with permission boundary
+IAM
+Admin cannot escalate privileges
+6
+Create SecureArchAppRole instance profile
+IAM
+Application least-privilege role
+7
+Create SecureArchAuditor read-only role
+IAM
+Audit access separated
+8
+Apply account password policy
+IAM
+14-character policy active
+9
+Attach SCPs to protect CloudTrail and Config
+AWS Organizations
+Guardrails enforced
+10
+Enable IAM Access Analyzer
+IAM Access Analyzer
+External access findings monitored
+11
+Validate policies with the policy simulator
+IAM Policy Simulator
+Only intended actions allowed
+4.1.4 RESULT OF SECURITY ARCHITECTURE AND IAM
+The Security Architecture and IAM module was implemented successfully. The identity foundation is fully operational:
+Component
+Configuration
+Test Result
+Metric
+Root account
+MFA enabled, no access keys
+Verified — PASSED
+0 root access keys
+Human access
+IAM Identity Center with MFA
+Verified — PASSED
+0 long-term user keys
+Application role
+Scoped S3, KMS and Logs actions
+Policy simulator — PASSED
+No wildcard actions
+Permission boundary
+Blocks iam:* escalation
+Deny test — PASSED
+Escalation attempts denied
+Access Analyzer
+Account-level analyzer
+Enabled — PASSED
+0 public findings
+Password policy
+14 chars, 90-day rotation
+Enabled — PASSED
+Policy compliant
+The identity layer is complete. All later modules rely on these roles and boundaries to access the network, encryption and monitoring services.
+Key Observations
+The results of this module show that identity, rather than the network, is the primary security boundary in the cloud. Because every request to AWS is authenticated and authorised through IAM, a precise and well-validated identity model prevents a large class of incidents before any other control is needed.
+No standing credentials: Human users authenticate through IAM Identity Center and receive short-lived STS credentials, which removes the risk of leaked long-term access keys.
+Bounded privilege: The permission boundary on the administrator role limits the maximum permissions that can ever be granted, so privilege escalation attempts were denied during testing.
+Validated policies: Access Analyzer and the policy simulator confirmed that the application role performs only the intended S3, KMS and CloudWatch Logs actions.
+Evidence for later modules: Every role assumption and policy change is recorded by CloudTrail.
+MODULE 2
+NETWORK SECURITY
+4.2.1 PROCEDURE FOR NETWORK SECURITY
+The Network Security module isolates the workload inside an Amazon Virtual Private Cloud (VPC) and controls every network path to and from it. This section documents how the VPC, subnets, route tables, security groups, network ACLs and VPC endpoints were designed and validated so that learner data is never reachable directly from the internet.
+Overview
+The network follows a three-tier segmentation pattern. Only the Application Load Balancer and the NAT gateway sit in public subnets. The application servers sit in private subnets with outbound-only internet access through the NAT gateway. The database sits in isolated subnets whose route tables contain no route to the internet at all. Traffic between tiers is permitted only by explicit security group references.
+Step 1: VPC and Subnet Design
+A VPC named secure-arch-vpc with CIDR 10.0.0.0/16 was created in us-east-1. Six subnets were created across two Availability Zones to provide high availability:
+Subnet
+AZ
+CIDR
+Purpose
+Public-1a
+us-east-1a
+10.0.0.0/24
+ALB node, NAT gateway
+Public-1b
+us-east-1b
+10.0.1.0/24
+ALB node, NAT gateway
+Private-App-1a
+us-east-1a
+10.0.10.0/24
+EC2 application tier
+Private-App-1b
+us-east-1b
+10.0.11.0/24
+EC2 application tier
+Private-DB-1a
+us-east-1a
+10.0.20.0/24
+RDS primary
+Private-DB-1b
+us-east-1b
+10.0.21.0/24
+RDS standby
+Step 2: Route Tables and Gateways
+Public route table: 0.0.0.0/0 to the Internet Gateway; associated with the public subnets only.
+Private-app route table: 0.0.0.0/0 to the NAT gateway for outbound patching; no inbound route from the internet.
+Private-DB route table: local route only; no internet or NAT route.
+Gateway and interface endpoints: S3 gateway endpoint and interface endpoints for KMS, Systems Manager and CloudWatch Logs keep AWS API traffic on the AWS network.
+Step 3: Security Groups and Network ACLs
+Security groups act as stateful, instance-level firewalls and were chained by reference so that each tier accepts traffic only from the tier above it:
+Security Group
+Inbound Rule
+Source
+Outbound
+ALB-SG
+TCP 443
+0.0.0.0/0 (HTTPS only)
+TCP 8080 to App-SG
+App-SG
+TCP 8080
+ALB-SG
+TCP 3306 to DB-SG; 443 to endpoints
+DB-SG
+TCP 3306
+App-SG
+None required
+Endpoint-SG
+TCP 443
+VPC CIDR 10.0.0.0/16
+None required
+Network ACLs add a stateless second layer at the subnet boundary. The database subnet NACL allows inbound TCP 3306 only from the application subnet CIDRs and denies everything else, and the NACL on the public subnets denies known-bad ports such as 22 and 3389 from the internet.
+Step 4: Network Visibility with VPC Flow Logs
+VPC Flow Logs were enabled for the whole VPC and delivered to an encrypted CloudWatch Logs group. Rejected connections are analysed to confirm that blocked paths — for example, a direct connection attempt from the public subnet to the database — are denied and logged. Remote administration is performed through AWS Systems Manager Session Manager, so no SSH port or bastion host is exposed.
+4.2.2 SCREENSHOTS FOR NETWORK SECURITY
+Figure 4.2.1: Amazon VPC — secure-arch-vpc with public, private and database subnets
+Figure 4.2.2: Amazon VPC — Security groups and route tables configuration
+Figure 4.2.3: VPC layout with public, private-application and isolated database subnets.
+Figure 4.2.4: Permitted traffic path enforced by chained security groups.
+4.2.3 ACTIVITY DIAGRAM
+The table below represents the complete Network Security implementation workflow:
+Step
+Activity
+Technology
+Output
+1
+Create VPC secure-arch-vpc (10.0.0.0/16)
+Amazon VPC
+Isolated virtual network
+2
+Create 2 public, 2 private-app and 2 private-DB subnets
+Amazon VPC
+Six subnets in two AZs
+3
+Attach Internet Gateway and create public route table
+Internet Gateway
+Public subnets routable
+4
+Create NAT gateway and private-app route table
+NAT Gateway
+Outbound-only internet for apps
+5
+Create DB route table with local route only
+Route tables
+DB tier isolated
+6
+Create S3 gateway endpoint and interface endpoints
+VPC Endpoints
+Private AWS API access
+7
+Create ALB-SG, App-SG, DB-SG and Endpoint-SG
+Security Groups
+Tier-to-tier least privilege
+8
+Configure network ACLs for DB and public subnets
+Network ACLs
+Stateless subnet filtering
+9
+Enable VPC Flow Logs to CloudWatch Logs
+VPC Flow Logs
+Traffic audit trail
+10
+Configure Session Manager access
+AWS Systems Manager
+No SSH or bastion required
+11
+Run connectivity and negative tests
+Reachability Analyzer
+Allowed / blocked paths verified
+4.2.4 RESULT OF NETWORK SECURITY
+The Network Security module was implemented successfully. All network controls are active and verified:
+Component
+Configuration
+Test Result
+Metric
+VPC and subnets
+10.0.0.0/16, 6 subnets, 2 AZs
+Created — PASSED
+Multi-AZ design
+Public exposure
+Only ALB reachable on 443
+Port scan — PASSED
+0 other open ports
+Database tier
+No internet route
+Reachability — PASSED
+No path from internet
+Security groups
+Chained by SG reference
+Rules test — PASSED
+No 0.0.0.0/0 except 443
+VPC endpoints
+S3, KMS, SSM, Logs
+Traffic test — PASSED
+API calls stay private
+Flow Logs
+All traffic, encrypted log group
+Logs streaming — PASSED
+Rejected flows recorded
+The network perimeter is complete. The workload is reachable only through the HTTPS listener of the load balancer, and every other path is denied and logged.
+Key Observations
+Network segmentation limits the blast radius of any single compromised component. Testing confirmed that traffic can only follow the intended path from the internet to the load balancer, then to the application tier, and finally to the database, and that every other path is blocked and logged.
+Reduced attack surface: Only TCP 443 on the load balancer is reachable from the internet; application servers and databases have no public IP addresses.
+Defence at two levels: Stateful security groups and stateless network ACLs enforce the same intent independently, so a mistake in one does not open the path.
+MODULE 3
+DATA PROTECTION
+4.3.1 PROCEDURE FOR DATA PROTECTION
+The Data Protection module ensures that all learner data is encrypted at rest and in transit using keys that the organisation controls. This section documents how AWS Key Management Service (AWS KMS) customer managed keys were created, governed and applied to Amazon S3, Amazon RDS, Amazon EBS and CloudTrail logs.
+Overview
+AWS KMS provides centralised creation, storage, rotation and auditing of cryptographic keys, with the key material protected in FIPS 140-validated hardware security modules. Instead of encrypting bulk data directly, services use envelope encryption: KMS generates a unique data key for each object or volume, the data is encrypted locally with that key, and the data key itself is stored only in encrypted form alongside the data. This design means the master key never leaves KMS.
+Step 1: Creating the Customer Managed Key
+A symmetric customer managed key (CMK) with the alias alias/secure-arch-data was created. Its properties are summarised below:
+Key Property
+Value
+Impact on System
+Key type
+Symmetric, AES-256-GCM
+Industry-standard authenticated encryption
+Key spec / usage
+SYMMETRIC_DEFAULT / ENCRYPT_DECRYPT
+Used by S3, RDS, EBS and CloudTrail
+Key origin
+AWS KMS (HSM-protected)
+Key material never leaves KMS
+Automatic rotation
+Enabled (every 365 days)
+No manual rotation effort
+Multi-Region
+Disabled
+Data stays in us-east-1
+Deletion window
+30 days
+Protection against accidental deletion
+Step 2: Key Policy and Separation of Duties
+The key policy separates people who manage the key from the identities that use it. Key administrators can enable rotation, edit the policy and schedule deletion, but cannot encrypt or decrypt data. Key users, namely the application role and the CloudTrail and Config service principals, can use the key for cryptographic operations but cannot change it. Grants are used for AWS services such as RDS and EBS, and the kms:ViaService condition restricts use of the key to requests that arrive through the intended AWS services.
+Step 3: Encrypting the Data Stores
+Amazon S3: default encryption set to SSE-KMS with the CMK and S3 Bucket Keys enabled to reduce KMS request cost; a bucket policy denies any PutObject request that is not encrypted with aws:kms; S3 Block Public Access is enabled on all four settings.
+Amazon RDS: storage encryption enabled with the CMK at creation, which also encrypts automated backups, snapshots and read replicas.
+Amazon EBS: EBS encryption by default enabled for the Region using the CMK so that every new volume is encrypted.
+CloudTrail logs: log files are encrypted with the CMK, as described in Module 4.
+Step 4: Encryption in Transit
+An AWS Certificate Manager (ACM) public certificate was attached to the HTTPS listener of the load balancer with a TLS 1.2 minimum security policy and automatic HTTP-to-HTTPS redirection. The RDS instance requires SSL connections through the rds.force_ssl parameter, and all calls to AWS APIs use TLS through the VPC endpoints.
+Step 5: Verification
+Verification was carried out by uploading a test object, confirming in the object properties that it reports SSE-KMS with the expected key ARN, and then removing the application role from the key policy to confirm that the object can no longer be read. CloudTrail events for kms:Decrypt and kms:GenerateDataKey were located to prove that every cryptographic operation is audited.
+4.3.2 SCREENSHOTS FOR DATA PROTECTION
+Figure 4.3.1: AWS KMS — Customer managed key with automatic rotation enabled
+Figure 4.3.2: Amazon S3 — Default encryption using SSE-KMS and Bucket Key
+Figure 4.3.3: Envelope encryption workflow using AWS KMS data keys.
+Figure 4.3.4: Key policy separating administrators from key users and the services protected.
+4.3.3 ACTIVITY DIAGRAM
+The table below represents the complete Data Protection implementation workflow:
+Step
+Activity
+Technology
+Output
+1
+Create symmetric CMK alias/secure-arch-data
+AWS KMS
+Customer managed key
+2
+Enable automatic annual key rotation
+AWS KMS
+Rotation policy active
+3
+Define key administrators and key users
+KMS key policy
+Separation of duties
+4
+Create data bucket with SSE-KMS and Bucket Key
+Amazon S3
+Encrypted-by-default bucket
+5
+Add bucket policy denying unencrypted uploads
+S3 bucket policy
+Non-compliant uploads rejected
+6
+Enable S3 Block Public Access (all 4 settings)
+Amazon S3
+No public exposure
+7
+Create RDS instance with CMK storage encryption
+Amazon RDS
+Encrypted DB and backups
+8
+Enable EBS encryption by default
+Amazon EC2 / EBS
+All new volumes encrypted
+9
+Attach ACM certificate with TLS 1.2+ policy
+ACM, ALB
+Encryption in transit
+10
+Force SSL on database connections
+RDS parameter group
+Plaintext DB sessions refused
+11
+Test encrypt/decrypt and revoke-access scenario
+KMS, CloudTrail
+Key use audited
+4.3.4 RESULT OF DATA PROTECTION
+The Data Protection module was implemented successfully. All data stores are encrypted and the key is governed:
+Component
+Configuration
+Test Result
+Metric
+KMS CMK
+Symmetric, rotation enabled
+Verified — PASSED
+Rotation every 365 days
+Amazon S3
+SSE-KMS, Bucket Key, deny unencrypted
+Upload test — PASSED
+100% objects encrypted
+Amazon RDS
+CMK storage encryption
+Verified — PASSED
+Backups also encrypted
+Amazon EBS
+Encryption by default
+Verified — PASSED
+All volumes encrypted
+TLS in transit
+ACM cert, TLS 1.2+
+Scan — PASSED
+HTTP redirected to HTTPS
+Key audit
+Decrypt events in CloudTrail
+Located — PASSED
+Every use logged
+The data layer is complete. Learner data is unreadable without both the correct IAM permission and the correct key policy permission, which provides two independent controls over every access.
+Key Observations
+Encryption turns a potential data breach into an access-control problem. Even if a snapshot, backup or bucket were exposed, the data would remain unreadable without permission to use the customer managed key.
+Central key control: A single customer managed key governs S3, RDS, EBS and CloudTrail logs, so access can be revoked in one place.
+Separation of duties: Key administrators cannot use the key for decryption, and key users cannot change the key policy.
+Auditable cryptography: Each kms:Decrypt and kms:GenerateDataKey call appears in CloudTrail, giving evidence of who accessed encrypted data and when.
+MODULE 4
+CLOUDTRAIL, AWS CONFIG AND RISK REMEDIATION
+4.4.1 PROCEDURE FOR CLOUDTRAIL, AWS CONFIG AND RISK REMEDIATION
+The Logging, Compliance and Risk Remediation module provides the detective and corrective controls of the architecture. AWS CloudTrail records who did what and when, AWS Config records what every resource looks like and whether it complies with the required baseline, and a documented risk register records the weaknesses found together with their remediation. This section documents how these controls were configured and used.
+Overview
+Preventive controls reduce the likelihood of an incident, but they cannot prove that they are still in place. CloudTrail and AWS Config close this gap by producing continuous, tamper-evident evidence. CloudTrail answers the question of who performed an action, while AWS Config answers whether the resulting configuration is compliant, and the two are correlated during investigations.
+Step 1: AWS CloudTrail – Activity Logging
+Trail: secure-arch-trail created as a multi-Region organisation-wide trail that records management events for read and write operations, and S3 data events for the learner-data bucket.
+Storage: logs delivered to a dedicated, versioned S3 bucket with Block Public Access, a bucket policy that allows only the CloudTrail service principal to write, and SSE-KMS encryption using the CMK from Module 3.
+Integrity: log file validation enabled so that a SHA-256 digest file proves logs have not been altered or deleted.
+Real-time alerting: the trail also streams to CloudWatch Logs. Metric filters and alarms notify the security team through Amazon SNS on root account usage, console login without MFA, IAM policy changes, security group changes, KMS key deletion scheduling and any StopLogging call.
+Step 2: AWS Config – Configuration Assessment
+AWS Config was enabled with a recorder for all supported resource types, including global IAM resources, and with a delivery channel to a dedicated encrypted S3 bucket. A set of AWS managed rules mapped to the CIS AWS Foundations Benchmark and to the Security Pillar was then deployed:
+Config Rule
+Control Verified
+Module Linked
+root-account-mfa-enabled
+Root user protected by MFA
+Module 1
+iam-user-mfa-enabled
+All IAM users use MFA
+Module 1
+iam-password-policy
+Password policy meets baseline
+Module 1
+restricted-ssh
+No security group allows SSH from 0.0.0.0/0
+Module 2
+vpc-flow-logs-enabled
+Flow logs active on VPC
+Module 2
+s3-bucket-public-read-prohibited
+No public S3 read access
+Module 3
+s3-bucket-server-side-encryption-enabled
+S3 default encryption on
+Module 3
+encrypted-volumes
+All EBS volumes encrypted
+Module 3
+rds-storage-encrypted
+RDS storage encrypted
+Module 3
+cmk-backing-key-rotation-enabled
+CMK rotation enabled
+Module 3
+cloudtrail-enabled
+CloudTrail active in the account
+Module 4
+cloud-trail-log-file-validation-enabled
+Log integrity validation on
+Module 4
+Step 3: Identifying Security Risks and Recommended Remediation
+A deliberately weakened test configuration was created to demonstrate detection — for example an unencrypted bucket, a security group open on port 22 and a user without MFA. AWS Config flagged each as NON_COMPLIANT within minutes. The risks found, their severity and the recommended remediation are documented in the risk register below:
+No.
+Risk Identified
+Severity
+Recommended Remediation
+Control / Service
+1
+Root account without MFA or with access keys
+Critical
+Enable MFA, delete keys, alert on root login
+IAM, CloudTrail
+2
+IAM user with console access and no MFA
+High
+Move to Identity Center; enforce MFA
+IAM, Config
+3
+Over-permissive IAM policy using wildcards
+High
+Rewrite least privilege; validate with Access Analyzer
+IAM
+4
+Security group open to 0.0.0.0/0 on SSH
+High
+Remove rule; use Session Manager
+VPC, SSM
+5
+S3 bucket allowing public access
+Critical
+Enable Block Public Access; auto-remediate
+S3, Config
+6
+Unencrypted S3, EBS or RDS storage
+High
+Enable SSE-KMS and default encryption
+KMS
+7
+KMS key without rotation or scheduled for deletion
+Medium
+Enable rotation; alarm on deletion
+KMS, CloudWatch
+8
+CloudTrail disabled or logs not validated
+Critical
+Multi-Region trail, validation, SCP protection
+CloudTrail, SCP
+9
+No VPC Flow Logs
+Medium
+Enable flow logs to encrypted log group
+VPC
+10
+Instances allowing IMDSv1
+Medium
+Require IMDSv2 on all instances
+EC2, Config
+Step 4: Automated Remediation and Re-Assessment
+For the most critical findings, AWS Config remediation actions were attached to the rules using AWS Systems Manager Automation documents. For example, a public S3 bucket is automatically reconfigured with Block Public Access enabled, and a security group that opens SSH to the world has the offending rule revoked. After remediation the rules are re-evaluated, and the compliance dashboard returns to COMPLIANT. All remediation actions are themselves recorded by CloudTrail, which preserves the evidence chain.
+4.4.2 SCREENSHOTS FOR CLOUDTRAIL, AWS CONFIG AND RISK REMEDIATION
+Figure 4.4.1: AWS CloudTrail — Multi-Region trail with log file validation and KMS encryption
+Figure 4.4.2: AWS Config — Rules and compliance dashboard
+Figure 4.4.3: CloudTrail logging, storage and alerting pipeline.
+Figure 4.4.4: AWS Config evaluation and automated remediation workflow.
+Figure 4.4.5: Risk identification and remediation lifecycle.
+Figure 4.4.6: SecureArch web dashboard showing the AWS cloud security posture, findings and compliance status.
+4.4.3 ACTIVITY DIAGRAM
+The table below represents the complete Logging, Compliance and Remediation implementation workflow:
+Step
+Activity
+Technology
+Output
+1
+Create log bucket with versioning and Block Public Access
+Amazon S3
+Protected log store
+2
+Apply bucket policy for CloudTrail service principal
+S3 bucket policy
+Write-only service access
+3
+Create multi-Region trail secure-arch-trail
+AWS CloudTrail
+All API activity recorded
+4
+Enable SSE-KMS and log file validation
+CloudTrail, KMS
+Encrypted, tamper-evident logs
+5
+Stream trail to CloudWatch Logs
+CloudWatch Logs
+Near real-time analysis
+6
+Create metric filters, alarms and SNS topic
+CloudWatch, SNS
+Security alerts delivered
+7
+Enable AWS Config recorder for all resources
+AWS Config
+Configuration history
+8
+Deploy 12 managed rules (CIS-aligned)
+AWS Config rules
+Continuous compliance checks
+9
+Create test misconfigurations
+Test resources
+Findings generated
+10
+Attach SSM Automation remediation
+Config, SSM Automation
+Self-healing configuration
+11
+Re-evaluate rules and record the risk register
+Config, documentation
+Risks closed and documented
+4.4.4 RESULT OF CLOUDTRAIL, AWS CONFIG AND RISK REMEDIATION
+The Logging, Compliance and Remediation module was completed successfully. All detective controls are active and verified:
+Component
+Configuration
+Test Result
+Metric
+CloudTrail
+Multi-Region, data events, validation
+Logging — PASSED
+Events delivered in minutes
+Log protection
+SSE-KMS, versioned, private bucket
+Verified — PASSED
+Tamper-evident logs
+CloudWatch alarms
+Root use, MFA, IAM, SG, KMS, StopLogging
+Alarm test — PASSED
+SNS alert received
+AWS Config
+Recorder on, 12 managed rules
+Evaluated — PASSED
+Rules evaluated on change
+Detection test
+Open SSH, public bucket, no MFA
+Detected — PASSED
+All flagged NON_COMPLIANT
+Remediation
+SSM Automation actions
+Re-evaluated — PASSED
+Resources back to COMPLIANT
+Risk register
+10 risks with remediation
+Documented — PASSED
+Owners and severity set
+All security controls are independently verified and collectively provide defence-in-depth, continuous compliance monitoring and an auditable evidence trail for the architecture.
+Key Observations
+The detective layer closes the loop on the whole architecture. Preventive controls from Modules 1 to 3 are only valuable if their continued presence can be proven, and CloudTrail together with AWS Config provides that proof continuously rather than only at audit time.
+Complete activity record: The multi-Region trail captures management and data events from every Region, including actions taken by the administrator role and by AWS services.
+Tamper-evident evidence: Log file validation, a versioned encrypted log bucket and service control policies make it difficult to alter or delete audit records without detection.
+Continuous compliance: AWS Config evaluated twelve managed rules against all recorded resources, and the dashboard returned to COMPLIANT after remediation.
+Faster response: CloudWatch alarms and SNS notifications reduced the time between a risky change and the security owner being informed to a few minutes.
+Together, these observations show that the six-layer design satisfies the objectives of the Well-Architected Security Pillar: identities are controlled, data is protected, activity is traceable and deviations are detected and corrected automatically.
+CONCLUSION
+The secure and compliant cloud architecture demonstrates how the AWS Well-Architected Security Pillar can be turned into a concrete, verifiable design. A defence-in-depth model was built from six independent layers. AWS IAM roles, permission boundaries and multi-factor authentication provide least-privilege identity control; an Amazon VPC with public, private and isolated subnets, chained security groups and network ACLs removes direct exposure of the application and database tiers; and AWS KMS customer managed keys encrypt data at rest in Amazon S3, RDS, EBS and the audit logs, while TLS protects data in transit.
+Detective and corrective controls complete the architecture. AWS CloudTrail records every API action in an encrypted and tamper-evident log, and AWS Config continuously evaluates resources against CIS-aligned rules, with automated remediation restoring compliant settings. A documented risk register captured the weaknesses discovered together with their severity and recommended remediation. Overall, the project shows that a secure, auditable and compliant environment can be built entirely with managed AWS services and repeated reliably through automation.
+Future Scope
+Several enhancements are identified. Amazon GuardDuty, AWS Security Hub and Amazon Inspector can be added for threat detection, centralised findings and vulnerability scanning. AWS WAF and AWS Shield can protect the load balancer from application-layer and DDoS attacks. The whole architecture can be expressed as infrastructure as code with AWS CloudFormation or Terraform and checked in a CI/CD pipeline, so that insecure changes are rejected before deployment. Multi-account governance with AWS Control Tower, Amazon Macie for discovering sensitive data in S3, and automated incident-response runbooks would further strengthen the posture for enterprise deployment.
+System Impact and Real-World Relevance
+Many real-world breaches are caused by configuration errors rather than sophisticated attacks. By embedding least privilege, network isolation, encryption and continuous compliance checking from the first design decision, the architecture reduces the likelihood and impact of such incidents. It also produces the audit evidence needed by regulations and frameworks such as ISO 27001, SOC 2, GDPR and the CIS Benchmarks, which lowers the cost and effort of audits for educational institutions and other organisations handling personal data.
+Engineering Trade-offs and Design Decisions
+Strong security introduces trade-offs. Private subnets with NAT gateways and interface endpoints increase monthly cost compared with a flat public network. Customer managed KMS keys add key-management responsibility and KMS request charges, which are reduced by using S3 Bucket Keys. Continuous AWS Config recording and CloudTrail data events increase storage and evaluation cost and were therefore limited to the resources that hold learner data. Strict least-privilege policies require more design effort and testing, which was addressed using IAM Access Analyzer and the policy simulator. These decisions favour security and auditability while keeping the architecture practical to operate.
+Limitations of the Current System
+The architecture was validated on a reference workload and a deliberately weakened test configuration, and it may not cover every service or workload pattern used in production. AWS Config managed rules check configuration state but do not detect application-level vulnerabilities or runtime threats. Automated remediation can disrupt workloads if rules are too aggressive and must be tested carefully. Finally, a single-account deployment was used, and an enterprise environment would require multi-account separation and centralised logging.
+REFERENCES
+[1] Amazon Web Services, "Security Pillar – AWS Well-Architected Framework," AWS Documentation, 2024. [Online]. Available: https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html
+[2] Amazon Web Services, "Security best practices in IAM," AWS Identity and Access Management User Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html
+[3] Amazon Web Services, "What is Amazon VPC?," Amazon VPC User Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html
+[4] Amazon Web Services, "What is AWS Key Management Service?," AWS KMS Developer Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/kms/latest/developerguide/overview.html
+[5] Amazon Web Services, "What is AWS CloudTrail?," AWS CloudTrail User Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html
+[6] Amazon Web Services, "What is AWS Config?," AWS Config Developer Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html
+[7] Amazon Web Services, "List of AWS Config Managed Rules," AWS Config Developer Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html
+[8] Amazon Web Services, "AWS Security Reference Architecture," AWS Prescriptive Guidance, 2024. [Online]. Available: https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html
+[9] Amazon Web Services, "Shared Responsibility Model," AWS Compliance, 2024. [Online]. Available: https://aws.amazon.com/compliance/shared-responsibility-model/
+[10] Center for Internet Security, "CIS Amazon Web Services Foundations Benchmark," CIS, 2024.
+[11] National Institute of Standards and Technology, "Security and Privacy Controls for Information Systems and Organizations," NIST Special Publication 800-53, Rev. 5, 2020.
+[12] Amazon Web Services, "Security best practices in Amazon VPC," Amazon VPC User Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-best-practices.html
+[13] Amazon Web Services, "AWS KMS key rotation," AWS Key Management Service Developer Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html
+[14] Amazon Web Services, "Using IAM Access Analyzer," AWS Identity and Access Management User Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html
+[15] Amazon Web Services, "Remediating noncompliant AWS resources by AWS Config rules," AWS Config Developer Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/config/latest/developerguide/remediation.html
+[16] Amazon Web Services, "Logging IAM and AWS STS API calls with AWS CloudTrail," AWS Identity and Access Management User Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/IAM/latest/UserGuide/cloudtrail-integration.html
+[17] Amazon Web Services, "Security Overview of AWS Lambda and Systems Manager Automation," AWS Systems Manager User Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html
+[18] Amazon Web Services, "Amazon VPC Flow Logs," Amazon VPC User Guide, 2024. [Online]. Available: https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html
